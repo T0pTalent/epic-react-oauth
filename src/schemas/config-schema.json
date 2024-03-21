@@ -1,0 +1,232 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"definitions": {
+		"credentials": {
+			"type": "object",
+			"additionalProperties": { 
+				"type": "object",
+				"required": ["clientId"],
+				"properties": {
+					"clientId": { "type": "string" },
+					"clientSecret": { "type": "string" }
+				}
+			}
+		},
+		"mime_type_mappings": {
+			"type": "object",
+			"additionalProperties": { 
+				"type": "string", 
+				"maxLength": 4,
+				"propertyNames": {
+					"pattern": "^[-\\w]+/[-\\w+]+$"
+				}
+			}
+		},
+		"upload": {
+			"type": "object",
+			"anyOf": [
+				{ "required": ["whitelist"] },
+				{ "required": ["manifestUrl"] },
+				{ "required": ["name", "uploadUrl", "infoUrl"] }
+			],
+			"properties": {
+				"whitelist":  {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^https?:\/\/.+"
+					}
+				},
+				"name": { "type": "string" },
+				"label": { "type": "string" },
+				"manifestUrl": {
+					"type": "string", 
+					"format": "uri"
+				},
+				"uploadUrl": {
+					"type": "string", 
+					"format": "uri"
+				},
+				"infoUrl": {
+					"type": "string", 
+					"format": "uri"
+				},
+				"simulate": {"type": "boolean"},
+				"successMessage": { "type": "string" },
+				"continueLabel": { "type": "string" },
+				"continueUrl": {
+					"type": "string", 
+					"format": "uri"
+				}
+			}
+		},
+		"date_sort_elements": {
+			"type": "object",
+			"additionalProperties": { 
+				"type": "array",
+				"items": { "type": "string" }
+			},
+			"propertyNames": {
+				"pattern": "^[A-Z][A-Za-z]*$"
+			}
+		},
+		"endpoint_lists": {
+			"type": "object",
+			"additionalProperties": { "$ref": "#/definitions/endpoint_list" }
+		},
+		"endpoint_list": {
+			"type": "object",
+			"required": [ "path" ],
+			"properties": {
+				"path": { "type": "string" },
+				"defaults": { "$ref": "#/definitions/endpoint_list_default" }
+			},
+			"additionalProperties": false
+		},
+		"endpoint_list_default": {
+			"type": "object",
+			"properties": {
+				"clientId": { "type": "string" },
+				"clientSecret": { "type": "string" },
+				"queryProfile": { "type": "string" },
+				"isOpen": { "type": "boolean" },
+				"scope": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^(([-\\w]+/(\\*\\.)?[*-\\w+]+(\\.\\w+)?)|profile|openid|fhirUser|launch|offline_access|online_access)$" 
+					}
+				},
+				"fhirEndpoint": { 
+					"type": "string",
+					"format": "uri"
+				},
+				"patient": { "type": "string" }
+			}
+		},
+		"query_profiles": {
+			"type": "object",
+			"additionalProperties": { "$ref": "#/definitions/query_profile" }
+		},
+		"query_profile": {
+			"type": "object",
+			"properties": {
+				"title": { "type": "string" },
+				"fhirVersion": { 
+					"type": "string",
+					"enum": ["DSTU2", "STU3", "R2", "R3", "R4", "R5"]
+				},
+				"retryLimit": { "type": "integer" },
+				"queries": {
+					"type": "array",
+					"minLength": 1,
+					"items": { "$ref": "#/definitions/query" }
+				}
+			},
+			"additionalProperties": false
+		},
+		"query": {
+			"type": "object",
+			"required": [ "resourcePath" ],
+			"properties": {
+				"title": { "type": "string"},
+				"resourcePath": { "type": "string" },
+				"params" : {
+					"type": "object",
+					"additionalProperties": {
+						"type": ["string", "array", "integer", "number"],
+						"item": { "type": "string" }
+					}
+				},
+				"retrieveReferences": { 
+					"type": ["array", "string"],
+					"items": { "type": "string" }
+				},
+				"containReferences": { 
+					"type": ["array", "string"],
+					"items": { "type": "string" }
+				},
+				"downloadAttachments": { 
+					"type": ["array", "string"],
+					"items": { "type": "string" }
+				},
+				"pageLimit": { "type": "integer" }
+			},
+			"additionalProperties": false
+		},
+		"template_item": {
+			"type": "object",
+			"properties": {
+				"path": {
+					"type": ["array", "string"],
+					"items": { "type": "string" }
+				},
+				"test": { "type": "string"},
+				"id": { "type": "string"},
+				"transform": { "type": "string"},
+				"children": {
+					"type": "array",
+					"minLength": 1,
+					"items": { "$ref": "#/definitions/template_item" }
+				}
+			}
+		},
+		"spreadsheet_template": {
+			"additionalProperties": false,
+			"type": "object",
+			"required": ["name", "template"],
+			"properties": {
+				"name": { "type": "string" },
+				"extends": {
+					"type": "array",
+					"items": { "type": "string"}
+				},
+				"sortBy": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"required": ["name", "dir"],
+						"additionalProperties": false,
+						"properties": {
+							"name": { "type": "string" },
+							"dir": {
+								"type": "string",
+								"enum": ["asc", "desc"]
+							}
+						}
+					}
+				},
+				"template": {
+					"type": "array",
+					"minLength": 1,
+					"items": { "$ref": "#/definitions/template_item" }
+				}
+			}
+		},
+		"spreadsheet_templates": {
+			"type": "object",
+			"additionalProperties": { "$ref": "#/definitions/spreadsheet_template" }
+		}
+	},
+	"type": "object",
+	"required": [ "queryProfiles" ],
+	"additionalProperties": false,
+	"properties": {
+		"appName": {"type": "string"},
+		"noCustomEndpoints": {"type": "boolean"},
+		"credentials": { "$ref": "#/definitions/credentials" },
+		"mimeTypeMappings": { "$ref": "#/definitions/mime_type_mappings" },
+		"dateSortElements": { "$ref": "#/definitions/date_sort_elements" },
+		"upload": { "$ref": "#/definitions/upload" },
+		"redirectUri": { 
+			"type": ["string", "null"],
+			"format": "uri"
+		},
+		"showWizard": { "type": "boolean" },
+		"endpointLists": { "$ref": "#/definitions/endpoint_lists" },
+		"queryProfiles": { "$ref": "#/definitions/query_profiles" },
+		"spreadsheetTemplates": { "$ref": "#/definitions/spreadsheet_templates" },
+		"warnOnPageNavigate": { "type": "boolean" },
+		"ignoreState": { "type": "boolean" }
+	}
+}

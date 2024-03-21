@@ -1,0 +1,29 @@
+{
+	"json.schemas": [
+		{
+			"fileMatch": [
+				"config.json"
+			],
+			"url": "./src/schemas/config-schema.json"
+		},
+		{
+			"fileMatch": [
+				"endpoints.json"
+			],
+			"url": "./src/schemas/endpoint-list-schema.json"
+		},
+		{
+			"fileMatch": [
+				"talkhealth-settings.json"
+			],
+			"url": "./src/schemas/user-settings-schema.json"
+		},
+		{
+			"fileMatch": [
+				"upload-manifest.json"
+			],
+			"url": "./src/schemas/upload-manifest-schema.json"
+		},
+	],
+	"git.ignoreLimitWarning": true
+}

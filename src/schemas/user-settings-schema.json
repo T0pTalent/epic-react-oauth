@@ -1,0 +1,86 @@
+{
+	"$schema": "http://json-schema.org/schema#",
+	"definitions": {
+		"provider_secure": {
+			"type": "object",
+			"required": [
+				"id", "fhirEndpoint", "orgId", "name", 
+				"queryProfile", "redirectUri", "scope"
+			],
+			"properties": {
+				"isOpen": { 
+					"type": "boolean", 
+					"enum": [ false ]
+				},
+				"id": { "type": ["string", "number"] },
+				"name": { "type": "string" },
+				"clientId": { "type": "string" },
+				"clientSecret": { "type": "string" },
+				"queryProfile": { "type": "string" },
+				"orgId": { "type": "string" },
+				"selected": {"type": "boolean" },
+				"redirectUri": { "type": "string" },
+				"scope": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^[-\\w]+/(\\*\\.)?[*-\\w+]+(\\.\\w+)?$" 
+					}
+				},
+				"fhirEndpoint": { "type": "string", "format": "uri" }
+			}
+		},
+		"provider_open": {
+			"type": "object",
+			"required": [
+				"id", "fhirEndpoint", "orgId", "name", 
+				"queryProfile", "redirectUri", "scope", "patient"
+			],
+			"properties": {
+				"isOpen": { 
+					"type": "boolean", 
+					"enum": [ true ]
+				},
+				"id": { "type": ["string", "number"] },
+				"name": { "type": "string" },
+				"clientId": { "type": "string" },
+				"queryProfile": { "type": "string" },
+				"orgId": { "type": "string" },
+				"selected": {"type": "boolean" },
+				"patient": { "type": "string" },
+				"scope": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^[-\\w]+/(\\*\\.)?[*-\\w+]+(\\.\\w+)?$" 
+					}
+				},
+				"fhirEndpoint": { "type": "string", "format": "uri" }
+			}
+		},
+		"providers": {
+			"type": "array",
+			"items":  { "oneOf": [
+				{"$ref": "#/definitions/provider_open"},
+				{"$ref": "#/definitions/provider_secure"}
+			]}
+		},
+		"github_config": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"token": { "type": "string" },
+				"owner": { "type": "string" },
+				"project": { "type": "string" }
+			}
+		}
+	},
+	"type": "object",
+	"required": [ "redirectUri", "providers", "githubConfig"],
+	"additionalProperties": false,
+	"properties": {
+		"providers": { "$ref": "#/definitions/providers" },
+		"redirectUri": { "type": "string", "format": "uri" },
+		"githubConfig": { "$ref": "#/definitions/github_config" }
+	}
+}
