@@ -17,12 +17,6 @@ talkhealth is compatible with the latest versions of Google Chrome, IE Edge, Saf
 
 **As early stage software, talkhealth has bugs. If you run into an issue, please review the "issues" tab on Github and, if the problem isn't listed, open a new issue ticket to let us know! Also, if you're a software developer and are able to fix the code, git pull requests are very welcome, but please get in touch before coding large changes.**
 
-## Demo
-
-[Wizard UI](https://talkhealth.syncfor.science/?wizard=true) - sample integration with historical data collection for a study
-
-[Patient UI](https://talkhealth.syncfor.science) - interface for patients interested in obtaining their own raw healthcare data or developers testing a FHIR server
-
 ## Installing and Running talkhealth
 
 talkhealth runs entirely as a web page in the user's browser and can be hosted from any web server that can serve static html, CSS, and javascript files (such as Amazon S3, Heroku, or even Github pages). Once the code is more stable, we may provide pre-complied releases, however, currently you can download and build the app using the following steps.
